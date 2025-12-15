@@ -8,9 +8,10 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
 
   constructor() {
     try {
-      const { PrismaClient } = require('.prisma/client');
+      // Use @prisma/client instead of .prisma/client for better compatibility
+      const { PrismaClient } = require('@prisma/client');
       this.prisma = new PrismaClient({
-        log: ['query', 'info', 'warn', 'error'],
+        log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
       });
       
       // Register Encryption Middleware
@@ -23,19 +24,31 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
       }
 
       this.logger.log('Core PrismaClient created successfully');
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to create Core PrismaClient: ' + error);
+      this.logger.error('Error details: ' + JSON.stringify(error, null, 2));
       throw error;
     }
   }
 
   async onModuleInit() {
     try {
-      await this.prisma.$connect();
-      this.logger.log('Core Prisma connected to database');
-    } catch (error) {
-      this.logger.error('Failed to connect to Core database: ' + error);
-      throw error;
+      // In serverless environments, connection pooling is handled differently
+      // We'll let Prisma handle connections on-demand
+      if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+        await this.prisma.$connect();
+        this.logger.log('Core Prisma connected to database');
+      } else {
+        // In Vercel/serverless, connections are managed automatically
+        this.logger.log('Core Prisma ready (serverless mode)');
+      }
+    } catch (error: any) {
+      this.logger.error('Failed to connect to Core database: ' + error?.message);
+      this.logger.error('Database URL configured: ' + (process.env.DATABASE_URL ? 'Yes' : 'No'));
+      // Don't throw in serverless - let it connect on first query
+      if (process.env.NODE_ENV !== 'production') {
+        throw error;
+      }
     }
   }
 

@@ -4,7 +4,6 @@
     "target": "es2020",
     "lib": ["es2020"],
     "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
@@ -12,6 +11,6 @@
     "noImplicitAny": false,
     "strictNullChecks": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "api/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
 }
