@@ -172,11 +172,6 @@ export class CategoryController {
       }
       throw error;
     }
-    
-    return { 
-      message: 'Category created successfully',
-      category: category
-    };
   }
 
   @Public()
