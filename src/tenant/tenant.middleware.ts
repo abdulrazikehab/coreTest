@@ -66,18 +66,23 @@ export class TenantMiddleware implements NestMiddleware {
   }
 
   private async resolveTenantFromDomain(hostname: string): Promise<string | undefined> {
-    // Check if it's a custom domain
-    const domainInfo = await this.domainService.getDomainByHostname(hostname);
-    if (domainInfo) {
-      return domainInfo.tenantId;
-    }
+    try {
+      // Check if it's a custom domain
+      const domainInfo = await this.domainService.getDomainByHostname(hostname);
+      if (domainInfo) {
+        return domainInfo.tenantId;
+      }
 
-    // Check if it's a subdomain
-    const subdomain = this.extractSubdomain(hostname);
-    if (subdomain) {
-      // Look up the tenant by subdomain
-      const tenantId = await this.domainService.findTenantBySubdomain(subdomain);
-      return tenantId || undefined;
+      // Check if it's a subdomain
+      const subdomain = this.extractSubdomain(hostname);
+      if (subdomain) {
+        // Look up the tenant by subdomain
+        const tenantId = await this.domainService.findTenantBySubdomain(subdomain);
+        return tenantId || undefined;
+      }
+    } catch (error: any) {
+      // Don't crash if domain lookup fails - just log and continue
+      this.logger.warn(`Failed to resolve tenant from domain ${hostname}: ${error?.message}`);
     }
 
     return undefined;

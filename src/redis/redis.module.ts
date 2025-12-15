@@ -21,11 +21,13 @@ import { RedisTestController } from './redis-test.controller';
           port: redisPort,
           db: configService.get('REDIS_DB') || 0,
           maxRetriesPerRequest: 1,
-          lazyConnect: true,
+          lazyConnect: true, // Don't connect immediately
           enableReadyCheck: false,
+          connectTimeout: process.env.VERCEL ? 500 : 5000, // Very short timeout for serverless
           retryStrategy: (times: number) => {
-            // Stop retrying after 3 attempts
-            if (times > 3) {
+            // Stop retrying after 2 attempts in serverless, 3 in regular
+            const maxRetries = process.env.VERCEL ? 2 : 3;
+            if (times > maxRetries) {
               console.warn('⚠️ Redis retry limit reached. Continuing without Redis.');
               return null;
             }
@@ -65,9 +67,15 @@ import { RedisTestController } from './redis-test.controller';
             console.log('🚀 Redis client ready');
           });
 
+          // In serverless, don't connect immediately - use lazy connection
+          if (process.env.VERCEL) {
+            console.log('⚠️ Redis: Using lazy connection in serverless environment');
+            return redisClient; // Return client without connecting
+          }
+          
           // Try to connect with timeout - shorter timeout for serverless
           try {
-            const timeout = process.env.VERCEL ? 1000 : 3000; // 1s for serverless, 3s for regular
+            const timeout = 3000; // 3s for regular environments
             await Promise.race([
               redisClient.connect(),
               new Promise((_, reject) => 

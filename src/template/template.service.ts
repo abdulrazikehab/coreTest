@@ -8,15 +8,26 @@ export class TemplateService implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}
 
   async onModuleInit() {
-    // Always reseed templates if count doesn't match (added or removed templates)
-    const count = await this.prisma.template.count({ where: { isDefault: true } });
-    const expectedCount = templateSeeds.length;
+    // Skip template seeding in serverless environments or if database is not ready
+    if (process.env.VERCEL) {
+      console.log('⚠️ Skipping template seeding in serverless environment');
+      return;
+    }
     
-    if (count !== expectedCount) {
-      console.log(`🌱 Found ${count} templates but expected ${expectedCount}, reseeding...`);
-      await this.seedTemplates();
-    } else {
-      console.log(`✅ Found ${count} default templates in database`);
+    try {
+      // Always reseed templates if count doesn't match (added or removed templates)
+      const count = await this.prisma.template.count({ where: { isDefault: true } });
+      const expectedCount = templateSeeds.length;
+      
+      if (count !== expectedCount) {
+        console.log(`🌱 Found ${count} templates but expected ${expectedCount}, reseeding...`);
+        await this.seedTemplates();
+      } else {
+        console.log(`✅ Found ${count} default templates in database`);
+      }
+    } catch (error: any) {
+      // Don't crash the app if template seeding fails
+      console.warn('⚠️ Template seeding failed, continuing without it:', error?.message);
     }
   }
 

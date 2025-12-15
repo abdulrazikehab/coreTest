@@ -35,7 +35,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     try {
       // In serverless environments, connection pooling is handled differently
       // We'll let Prisma handle connections on-demand
-      if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+      const isServerless = process.env.VERCEL || process.env.VERCEL_ENV;
+      if (!isServerless && process.env.NODE_ENV !== 'production') {
         await this.prisma.$connect();
         this.logger.log('Core Prisma connected to database');
       } else {
@@ -46,7 +47,8 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
       this.logger.error('Failed to connect to Core database: ' + error?.message);
       this.logger.error('Database URL configured: ' + (process.env.DATABASE_URL ? 'Yes' : 'No'));
       // Don't throw in serverless - let it connect on first query
-      if (process.env.NODE_ENV !== 'production') {
+      const isServerless = process.env.VERCEL || process.env.VERCEL_ENV;
+      if (!isServerless) {
         throw error;
       }
     }
