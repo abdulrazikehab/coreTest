@@ -58,7 +58,7 @@ export class MerchantReportService {
     });
 
     const todayOrdersCount = todayOrders.length;
-    const todayProfit = todayOrders.reduce((sum, o) => sum + Number(o.profitTotal), 0);
+    const todayProfit = todayOrders.reduce((sum: number, o: any) => sum + Number(o.profitTotal), 0);
 
     // Pending orders count
     const pendingOrdersCount = await this.prisma.merchantOrder.count({
@@ -77,13 +77,13 @@ export class MerchantReportService {
       take: 5,
     });
 
-    const productIds = topProducts.map((p) => p.productId);
+    const productIds = topProducts.map((p: any) => p.productId);
     const products = await this.prisma.cardProduct.findMany({
       where: { id: { in: productIds } },
       select: { id: true, name: true, nameAr: true, image: true },
     });
 
-    const productMap = new Map(products.map((p) => [p.id, p]));
+    const productMap = new Map(products.map((p: any) => [p.id, p]));
 
     // Recent orders
     const recentOrders = await this.prisma.merchantOrder.findMany({
@@ -106,11 +106,11 @@ export class MerchantReportService {
     const progressRecords = await this.prisma.merchantPromotionProgress.findMany({
       where: {
         merchantId,
-        promotionId: { in: activePromotions.map((p) => p.id) },
+        promotionId: { in: activePromotions.map((p: any) => p.id) },
       },
     });
 
-    const progressMap = new Map(progressRecords.map((p) => [p.promotionId, p]));
+    const progressMap = new Map(progressRecords.map((p: any) => [p.promotionId, p]));
 
     // Unread notifications count
     const unreadNotificationsCount = await this.prisma.merchantNotification.count({
@@ -123,8 +123,8 @@ export class MerchantReportService {
       todayOrdersCount,
       todayProfit,
       pendingOrdersCount,
-      topSellingProducts: topProducts.map((tp) => {
-        const product = productMap.get(tp.productId);
+      topSellingProducts: topProducts.map((tp: any) => {
+        const product = productMap.get(tp.productId) as { name?: string; nameAr?: string; image?: string } | undefined;
         return {
           productId: tp.productId,
           name: product?.name || 'Unknown',
@@ -135,15 +135,15 @@ export class MerchantReportService {
           profit: Number(tp._sum.lineProfit || 0),
         };
       }),
-      recentOrders: recentOrders.map((o) => ({
+      recentOrders: recentOrders.map((o: any) => ({
         id: o.id,
         orderNumber: o.orderNumber,
         status: o.status,
         total: Number(o.total),
         createdAt: o.createdAt,
       })),
-      activePromotions: activePromotions.map((p) => {
-        const progress = progressMap.get(p.id);
+      activePromotions: activePromotions.map((p: any) => {
+        const progress = progressMap.get(p.id) as { progress?: any; isCompleted?: boolean; completedAt?: Date; rewardClaimed?: boolean } | undefined;
         const conditions = p.conditions as any;
         const progressData = (progress?.progress as any) || {};
         
@@ -183,8 +183,8 @@ export class MerchantReportService {
       },
     });
 
-    const profitTotal = orders.reduce((sum, o) => sum + Number(o.profitTotal), 0);
-    const revenueTotal = orders.reduce((sum, o) => sum + Number(o.total), 0);
+    const profitTotal = orders.reduce((sum: number, o: any) => sum + Number(o.profitTotal), 0);
+    const revenueTotal = orders.reduce((sum: number, o: any) => sum + Number(o.total), 0);
     const ordersCount = orders.length;
 
     // Group by day for breakdown
@@ -230,17 +230,17 @@ export class MerchantReportService {
       take: limit,
     });
 
-    const productIds = topProducts.map((p) => p.productId);
+    const productIds = topProducts.map((p: any) => p.productId);
     const products = await this.prisma.cardProduct.findMany({
       where: { id: { in: productIds } },
       select: { id: true, name: true, nameAr: true, image: true },
     });
 
-    const productMap = new Map(products.map((p) => [p.id, p]));
+    const productMap = new Map(products.map((p: any) => [p.id, p]));
 
     return {
-      products: topProducts.map((tp) => {
-        const product = productMap.get(tp.productId);
+      products: topProducts.map((tp: any) => {
+        const product = productMap.get(tp.productId) as { name?: string; nameAr?: string; image?: string } | undefined;
         return {
           productId: tp.productId,
           name: product?.name || 'Unknown',
@@ -278,7 +278,7 @@ export class MerchantReportService {
     });
 
     return {
-      changes: changes.map((c) => ({
+      changes: changes.map((c: any) => ({
         productId: c.productId,
         productName: c.product.name,
         productNameAr: c.product.nameAr,

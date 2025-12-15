@@ -118,9 +118,9 @@ export class CartService {
     }
 
     // Verify variant exists if provided
-    let selectedVariant = null;
+    let selectedVariant: { id: string; inventoryQuantity: number } | null = null;
     if (productVariantId) {
-      selectedVariant = product.variants.find((v: { id: string; }) => v.id === productVariantId);
+      selectedVariant = product.variants.find((v: any) => v.id === productVariantId) as { id: string; inventoryQuantity: number } | undefined || null;
       if (!selectedVariant) {
         throw new NotFoundException('Product variant not found');
       }

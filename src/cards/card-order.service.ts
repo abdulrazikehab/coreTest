@@ -405,7 +405,9 @@ export class CardOrderService {
     // Update product stock counts
     const productIds = [...new Set(reservedCards.map((c) => c.productId))];
     for (const productId of productIds) {
-      await this.cardProductService.updateStockCount(productId);
+      if (typeof productId === 'string') {
+        await this.cardProductService.updateStockCount(productId);
+      }
     }
 
     this.logger.log(`Order ${order.orderNumber} cancelled. Reason: ${reason}`);

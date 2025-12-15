@@ -45,17 +45,16 @@ export class MerchantSettingsDto {
 }
 
 export class MerchantProfileResponse {
-  id: string;
-  businessName: string;
+  id!: string;
+  businessName!: string;
   businessNameAr?: string;
   phone?: string;
   email?: string;
-  countryCode: string;
-  defaultCurrency: string;
-  timezone: string;
-  status: string;
+  countryCode!: string;
+  defaultCurrency!: string;
+  timezone!: string;
+  status!: string;
   settings?: any;
-  lowBalanceThreshold: number;
-  createdAt: Date;
+  lowBalanceThreshold!: number;
+  createdAt!: Date;
 }
-

@@ -3,11 +3,11 @@ import { Type } from 'class-transformer';
 
 export class QuickRechargeItem {
   @IsString()
-  productId: string;
+  productId!: string;
 
   @IsNumber()
   @Min(1)
-  qty: number;
+  qty!: number;
 
   @IsOptional()
   @IsString()
@@ -20,17 +20,17 @@ export class QuickRechargeItem {
 
 export class CreateOrderFromCartDto {
   @IsEnum(['cart'])
-  source: 'cart';
+  source!: 'cart';
 
   @IsString()
-  cartId: string;
+  cartId!: string;
 
   @IsOptional()
   @IsString()
   playerId?: string;
 
   @IsEnum(['wallet', 'bank_transfer'])
-  paymentMethod: 'wallet' | 'bank_transfer';
+  paymentMethod!: 'wallet' | 'bank_transfer';
 
   @IsOptional()
   @IsString()
@@ -39,19 +39,19 @@ export class CreateOrderFromCartDto {
 
 export class CreateQuickRechargeOrderDto {
   @IsEnum(['quick_recharge'])
-  source: 'quick_recharge';
+  source!: 'quick_recharge';
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => QuickRechargeItem)
-  items: QuickRechargeItem[];
+  items!: QuickRechargeItem[];
 
   @IsOptional()
   @IsString()
   playerId?: string;
 
   @IsEnum(['wallet', 'bank_transfer'])
-  paymentMethod: 'wallet' | 'bank_transfer';
+  paymentMethod!: 'wallet' | 'bank_transfer';
 
   @IsOptional()
   @IsString()
@@ -62,7 +62,7 @@ export type CreateOrderDto = CreateOrderFromCartDto | CreateQuickRechargeOrderDt
 
 export class ReorderDto {
   @IsEnum(['wallet', 'bank_transfer'])
-  paymentMethod: 'wallet' | 'bank_transfer';
+  paymentMethod!: 'wallet' | 'bank_transfer';
 
   @IsOptional()
   @IsString()
@@ -81,10 +81,10 @@ export class CancelOrderDto {
 
 export class SubmitBankTransferProofDto {
   @IsString()
-  paymentIntentId: string;
+  paymentIntentId!: string;
 
   @IsString()
-  proofAttachmentUrl: string;
+  proofAttachmentUrl!: string;
 
   @IsOptional()
   @IsString()
@@ -125,67 +125,67 @@ export class OrderListQuery {
 }
 
 export class OrderSummaryResponse {
-  id: string;
-  orderNumber: string;
-  status: string;
-  paymentStatus: string;
-  paymentMethod: string;
-  source: string;
-  total: number;
-  currency: string;
-  itemsCount: number;
+  id!: string;
+  orderNumber!: string;
+  status!: string;
+  paymentStatus!: string;
+  paymentMethod!: string;
+  source!: string;
+  total!: number;
+  currency!: string;
+  itemsCount!: number;
   playerName?: string;
-  createdAt: Date;
+  createdAt!: Date;
   completedAt?: Date;
 }
 
 export class OrderDetailResponse extends OrderSummaryResponse {
-  subtotal: number;
-  discountTotal: number;
-  feesTotal: number;
-  taxTotal: number;
-  profitTotal: number;
-  items: OrderItemResponse[];
-  events: OrderEventResponse[];
+  subtotal!: number;
+  discountTotal!: number;
+  feesTotal!: number;
+  taxTotal!: number;
+  profitTotal!: number;
+  items!: OrderItemResponse[];
+  events!: OrderEventResponse[];
   paymentIntent?: PaymentIntentResponse;
   player?: PlayerSnapshotResponse;
   invoice?: InvoiceSnapshotResponse;
 }
 
 export class OrderItemResponse {
-  id: string;
-  productId: string;
-  productName: string;
+  id!: string;
+  productId!: string;
+  productName!: string;
   productNameAr?: string;
-  quantity: number;
-  unitPrice: number;
-  lineTotal: number;
+  quantity!: number;
+  unitPrice!: number;
+  lineTotal!: number;
   deliveries?: DeliveryResponse[];
 }
 
 export class DeliveryResponse {
-  cardCode: string;
+  cardCode!: string;
   cardPin?: string;
-  deliveredAt: Date;
+  deliveredAt!: Date;
   viewedAt?: Date;
 }
 
 export class OrderEventResponse {
-  id: string;
-  type: string;
+  id!: string;
+  type!: string;
   fromStatus?: string;
   toStatus?: string;
   message?: string;
-  actorType: string;
-  createdAt: Date;
+  actorType!: string;
+  createdAt!: Date;
 }
 
 export class PaymentIntentResponse {
-  id: string;
-  method: string;
-  status: string;
-  amount: number;
-  currency: string;
+  id!: string;
+  method!: string;
+  status!: string;
+  amount!: number;
+  currency!: string;
   bankDetails?: BankDetailsResponse;
   proofAttachmentUrl?: string;
   reviewNote?: string;
@@ -193,22 +193,21 @@ export class PaymentIntentResponse {
 }
 
 export class BankDetailsResponse {
-  bankName: string;
+  bankName!: string;
   bankNameAr?: string;
-  accountName: string;
-  accountNumber: string;
-  iban: string;
+  accountName!: string;
+  accountNumber!: string;
+  iban!: string;
 }
 
 export class PlayerSnapshotResponse {
-  id: string;
-  name: string;
+  id!: string;
+  name!: string;
   phone?: string;
 }
 
 export class InvoiceSnapshotResponse {
-  id: string;
-  invoiceNumber: string;
-  issuedAt: Date;
+  id!: string;
+  invoiceNumber!: string;
+  issuedAt!: Date;
 }
-

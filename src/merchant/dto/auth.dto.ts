@@ -2,11 +2,11 @@ import { IsString, IsOptional, IsEmail, MinLength, IsObject } from 'class-valida
 
 export class MerchantLoginDto {
   @IsString()
-  identifier: string; // email/phone/username
+  identifier!: string; // email/phone/username
 
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @IsOptional()
   @IsObject()
@@ -19,7 +19,7 @@ export class MerchantLoginDto {
 
 export class RefreshTokenDto {
   @IsString()
-  refreshToken: string;
+  refreshToken!: string;
 }
 
 export class LogoutDto {
@@ -30,14 +30,14 @@ export class LogoutDto {
 
 export class MerchantRegisterDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @IsString()
-  businessName: string;
+  businessName!: string;
 
   @IsOptional()
   @IsString()
@@ -55,10 +55,10 @@ export class MerchantRegisterDto {
 export class ChangePasswordDto {
   @IsString()
   @MinLength(6)
-  currentPassword: string;
+  currentPassword!: string;
 
   @IsString()
   @MinLength(6)
-  newPassword: string;
+  newPassword!: string;
 }
 

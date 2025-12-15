@@ -11,7 +11,7 @@ export class PlayerService {
   // Create player
   async create(merchantId: string, dto: CreatePlayerDto) {
     // Create player with accounts in transaction
-    const player = await this.prisma.$transaction(async (tx) => {
+    const player = await this.prisma.$transaction(async (tx: any) => {
       const newPlayer = await tx.player.create({
         data: {
           merchantId,
@@ -86,7 +86,7 @@ export class PlayerService {
     const nextCursor = hasMore ? items[items.length - 1].id : null;
 
     return {
-      items: items.map((p) => ({
+      items: items.map((p: any) => ({
         id: p.id,
         name: p.name,
         phone: p.phone,
@@ -116,7 +116,7 @@ export class PlayerService {
       throw new NotFoundException('Player not found');
     }
 
-    const totalSpent = player.orders.reduce((sum, o) => sum + Number(o.total), 0);
+    const totalSpent = player.orders.reduce((sum: number, o: any) => sum + Number(o.total), 0);
 
     return {
       id: player.id,
@@ -125,7 +125,7 @@ export class PlayerService {
       notes: player.notes,
       isFavorite: player.isFavorite,
       accountsCount: player.gameAccounts.length,
-      accounts: player.gameAccounts.map((a) => ({
+      accounts: player.gameAccounts.map((a: any) => ({
         id: a.id,
         gameKey: a.gameKey,
         accountIdentifier: a.accountIdentifier,
@@ -285,7 +285,7 @@ export class PlayerService {
     ]);
 
     return {
-      data: orders.map((o) => ({
+      data: orders.map((o: any) => ({
         id: o.id,
         orderNumber: o.orderNumber,
         status: o.status,

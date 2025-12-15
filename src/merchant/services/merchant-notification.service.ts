@@ -35,7 +35,7 @@ export class MerchantNotificationService {
     const nextCursor = hasMore ? items[items.length - 1].id : null;
 
     return {
-      items: items.map((n) => ({
+      items: items.map((n: any) => ({
         id: n.id,
         type: n.type,
         titleEn: n.titleEn,

@@ -21,20 +21,20 @@ export class TransactionService {
     });
 
     const totalRevenue = transactions
-      .filter((t) => t.status === 'COMPLETED')
-      .reduce((sum, t) => sum + Number(t.amount), 0);
+      .filter((t: any) => t.status === 'COMPLETED')
+      .reduce((sum: number, t: any) => sum + Number(t.amount), 0);
 
     const totalPlatformFees = transactions
-      .filter((t) => t.status === 'COMPLETED')
-      .reduce((sum, t) => sum + Number(t.platformFee), 0);
+      .filter((t: any) => t.status === 'COMPLETED')
+      .reduce((sum: number, t: any) => sum + Number(t.platformFee), 0);
 
     const totalEarnings = transactions
-      .filter((t) => t.status === 'COMPLETED')
-      .reduce((sum, t) => sum + Number(t.merchantEarnings), 0);
+      .filter((t: any) => t.status === 'COMPLETED')
+      .reduce((sum: number, t: any) => sum + Number(t.merchantEarnings), 0);
 
     const pendingAmount = transactions
-      .filter((t) => t.status === 'PENDING' || t.status === 'PROCESSING')
-      .reduce((sum, t) => sum + Number(t.merchantEarnings), 0);
+      .filter((t: any) => t.status === 'PENDING' || t.status === 'PROCESSING')
+      .reduce((sum: number, t: any) => sum + Number(t.merchantEarnings), 0);
 
     return {
       totalRevenue,
@@ -98,7 +98,7 @@ export class TransactionService {
     ]);
 
     return {
-      transactions: transactions.map((t) => ({
+      transactions: transactions.map((t: any) => ({
         id: t.id,
         orderNumber: t.orderNumber || t.order?.orderNumber,
         amount: Number(t.amount),
@@ -203,7 +203,7 @@ export class TransactionService {
 
     // Group by payment provider
     const byProvider = transactions.reduce(
-      (acc, t) => {
+      (acc: any, t: any) => {
         const provider = t.paymentProvider;
         if (!acc[provider]) {
           acc[provider] = { count: 0, amount: 0 };
@@ -217,7 +217,7 @@ export class TransactionService {
 
     // Group by date
     const byDate = transactions.reduce(
-      (acc, t) => {
+      (acc: any, t: any) => {
         const date = t.createdAt.toISOString().split('T')[0];
         if (!acc[date]) {
           acc[date] = { count: 0, amount: 0, fees: 0, earnings: 0 };
@@ -237,22 +237,25 @@ export class TransactionService {
     return {
       totalTransactions: transactions.length,
       totalAmount: transactions.reduce(
-        (sum, t) => sum + Number(t.amount),
+        (sum: number, t: any) => sum + Number(t.amount),
         0,
       ),
       totalFees: transactions.reduce(
-        (sum, t) => sum + Number(t.platformFee),
+        (sum: number, t: any) => sum + Number(t.platformFee),
         0,
       ),
       totalEarnings: transactions.reduce(
-        (sum, t) => sum + Number(t.merchantEarnings),
+        (sum: number, t: any) => sum + Number(t.merchantEarnings),
         0,
       ),
       byProvider,
-      byDate: Object.entries(byDate).map(([date, data]) => ({
-        date,
-        ...data,
-      })),
+      byDate: Object.entries(byDate).map(([date, data]: [string, any]) => {
+        const dataObj = data && typeof data === 'object' ? data : {};
+        return {
+          date,
+          ...dataObj,
+        };
+      }),
     };
   }
 

@@ -3,10 +3,10 @@ import { Type } from 'class-transformer';
 
 export class GameAccountDto {
   @IsString()
-  gameKey: string;
+  gameKey!: string;
 
   @IsString()
-  accountIdentifier: string;
+  accountIdentifier!: string;
 
   @IsOptional()
   @IsString()
@@ -15,7 +15,7 @@ export class GameAccountDto {
 
 export class CreatePlayerDto {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsOptional()
   @IsString()
@@ -52,10 +52,10 @@ export class UpdatePlayerDto {
 
 export class AddGameAccountDto {
   @IsString()
-  gameKey: string;
+  gameKey!: string;
 
   @IsString()
-  accountIdentifier: string;
+  accountIdentifier!: string;
 
   @IsOptional()
   @IsString()
@@ -80,27 +80,26 @@ export class PlayerListQuery {
 }
 
 export class PlayerSummaryResponse {
-  id: string;
-  name: string;
+  id!: string;
+  name!: string;
   phone?: string;
   notes?: string;
-  isFavorite: boolean;
-  accountsCount: number;
+  isFavorite!: boolean;
+  accountsCount!: number;
   lastOrderAt?: Date;
-  createdAt: Date;
+  createdAt!: Date;
 }
 
 export class PlayerDetailResponse extends PlayerSummaryResponse {
-  accounts: GameAccountResponse[];
-  ordersCount: number;
-  totalSpent: number;
+  accounts!: GameAccountResponse[];
+  ordersCount!: number;
+  totalSpent!: number;
 }
 
 export class GameAccountResponse {
-  id: string;
-  gameKey: string;
-  accountIdentifier: string;
+  id!: string;
+  gameKey!: string;
+  accountIdentifier!: string;
   label?: string;
-  createdAt: Date;
+  createdAt!: Date;
 }
-

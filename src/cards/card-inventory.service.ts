@@ -130,8 +130,9 @@ export class CardInventoryService {
           },
         });
         validCards++;
-      } catch (error) {
-        errors.push(`Row ${rowNum}: Failed to import - ${error.message}`);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        errors.push(`Row ${rowNum}: Failed to import - ${errorMessage}`);
         invalidCards++;
       }
     }
@@ -216,8 +217,9 @@ export class CardInventoryService {
           },
         });
         validCards++;
-      } catch (error) {
-        errors.push(`Card ${i + 1}: Failed to import - ${error.message}`);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        errors.push(`Card ${i + 1}: Failed to import - ${errorMessage}`);
         invalidCards++;
       }
     }

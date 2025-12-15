@@ -33,14 +33,14 @@ export class ProductService {
   const { variants, images, categoryIds, suppliers, supplierIds, ...productData } = createProductDto;
 
   // Check if SKU exists within tenant
-  let existingProduct = null;
+  let existingProduct: { id: string } | null = null;
   if (productData.sku) {
     existingProduct = await this.prisma.product.findFirst({
       where: {
         tenantId,
         sku: productData.sku,
       },
-    });
+    }) as { id: string } | null;
 
     if (existingProduct) {
       if (upsert) {
@@ -121,7 +121,7 @@ export class ProductService {
         isActive: true,
       },
     });
-    validSuppliers = existingSuppliers.map((s, index) => ({
+    validSuppliers = existingSuppliers.map((s: any, index: number) => ({
       supplierId: s.id,
       discountRate: Number(s.discountRate),
       isPrimary: index === 0, // First supplier is primary by default

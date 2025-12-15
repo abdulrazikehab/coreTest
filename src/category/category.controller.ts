@@ -175,7 +175,7 @@ export class CategoryController {
     
     return { 
       message: 'Category created successfully',
-      category 
+      category: category
     };
   }
 

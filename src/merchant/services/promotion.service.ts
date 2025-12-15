@@ -40,14 +40,14 @@ export class PromotionService {
     const progressRecords = await this.prisma.merchantPromotionProgress.findMany({
       where: {
         merchantId,
-        promotionId: { in: promotions.map((p) => p.id) },
+        promotionId: { in: promotions.map((p: any) => p.id) },
       },
     });
 
-    const progressMap = new Map(progressRecords.map((p) => [p.promotionId, p]));
+    const progressMap = new Map(progressRecords.map((p: any) => [p.promotionId, p]));
 
-    return promotions.map((p) => {
-      const progress = progressMap.get(p.id);
+    return promotions.map((p: any) => {
+      const progress = progressMap.get(p.id) as { progress?: any; isCompleted?: boolean; completedAt?: Date; rewardClaimed?: boolean } | undefined;
       return {
         id: p.id,
         titleEn: p.titleEn,

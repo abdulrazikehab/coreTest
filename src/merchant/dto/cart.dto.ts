@@ -2,11 +2,11 @@ import { IsString, IsNumber, IsOptional, Min, IsObject } from 'class-validator';
 
 export class AddCartItemDto {
   @IsString()
-  productId: string;
+  productId!: string;
 
   @IsNumber()
   @Min(0)
-  qty: number; // 0 to remove
+  qty!: number; // 0 to remove
 
   @IsOptional()
   @IsObject()
@@ -20,36 +20,36 @@ export class AddCartItemDto {
 export class UpdateCartItemDto {
   @IsNumber()
   @Min(0)
-  qty: number;
+  qty!: number;
 }
 
 export class CartResponse {
-  cartId: string;
-  currency: string;
-  items: CartItemResponse[];
-  totals: CartTotals;
+  cartId!: string;
+  currency!: string;
+  items!: CartItemResponse[];
+  totals!: CartTotals;
 }
 
 export class CartItemResponse {
-  id: string;
-  productId: string;
-  productName: string;
+  id!: string;
+  productId!: string;
+  productName!: string;
   productNameAr?: string;
   productImage?: string;
-  qty: number;
-  effectiveUnitPrice: number;
-  lineTotal: number;
-  minQty: number;
-  maxQty: number;
-  availableStock: number;
+  qty!: number;
+  effectiveUnitPrice!: number;
+  lineTotal!: number;
+  minQty!: number;
+  maxQty!: number;
+  availableStock!: number;
   metadata?: any;
 }
 
 export class CartTotals {
-  subtotal: number;
-  discountTotal: number;
-  feesTotal: number;
-  taxTotal: number;
-  total: number;
+  subtotal!: number;
+  discountTotal!: number;
+  feesTotal!: number;
+  taxTotal!: number;
+  total!: number;
 }
 

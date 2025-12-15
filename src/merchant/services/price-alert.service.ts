@@ -36,7 +36,7 @@ export class PriceAlertService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return alerts.map((a) => ({
+    return alerts.map((a: any) => ({
       id: a.id,
       productId: a.productId,
       productName: a.product.name,
@@ -236,7 +236,7 @@ export class PriceAlertService {
       take: limit,
     });
 
-    return history.map((h) => ({
+    return history.map((h: any) => ({
       id: h.id,
       oldPrice: Number(h.oldPrice),
       newPrice: Number(h.newPrice),

@@ -37,22 +37,22 @@ export class EmployeePermissions {
 
 export class CreateEmployeeDto {
   @IsString()
-  name: string;
+  name!: string;
 
   @IsString()
   @MinLength(3)
-  username: string;
+  username!: string;
 
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @IsOptional()
   @IsString()
   phone?: string;
 
   @IsObject()
-  permissions: EmployeePermissions;
+  permissions!: EmployeePermissions;
 }
 
 export class UpdateEmployeeDto {
@@ -89,12 +89,12 @@ export class EmployeeListQuery {
 }
 
 export class EmployeeResponse {
-  id: string;
-  name: string;
-  username: string;
+  id!: string;
+  name!: string;
+  username!: string;
   phone?: string;
-  status: string;
-  permissions: EmployeePermissions;
-  createdAt: Date;
-  updatedAt: Date;
+  status!: string;
+  permissions!: EmployeePermissions;
+  createdAt!: Date;
+  updatedAt!: Date;
 }

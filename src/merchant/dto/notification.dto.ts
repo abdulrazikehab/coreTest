@@ -14,11 +14,11 @@ export class NotificationListQuery {
 }
 
 export class NotificationResponse {
-  id: string;
-  type: string;
-  titleEn: string;
+  id!: string;
+  type!: string;
+  titleEn!: string;
   titleAr?: string;
-  bodyEn: string;
+  bodyEn!: string;
   bodyAr?: string;
   data?: {
     orderId?: string;
@@ -27,10 +27,9 @@ export class NotificationResponse {
     [key: string]: any;
   };
   readAt?: Date;
-  createdAt: Date;
+  createdAt!: Date;
 }
 
 export class UnreadCountResponse {
-  count: number;
+  count!: number;
 }
-

@@ -152,7 +152,7 @@ export class MerchantOrderService {
     }
 
     // Create order in transaction
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx: any) => {
       // Create order
       const order = await tx.merchantOrder.create({
         data: {
@@ -252,7 +252,7 @@ export class MerchantOrderService {
       throw new BadRequestException('No bank account configured for transfers');
     }
 
-    const result = await this.prisma.$transaction(async (tx) => {
+    const result = await this.prisma.$transaction(async (tx: any) => {
       // Create order
       const order = await tx.merchantOrder.create({
         data: {
@@ -359,7 +359,7 @@ export class MerchantOrderService {
         // Update stock
         await this.cardProductService.updateStockCount(item.productId);
       } catch (error) {
-        this.logger.error(`Failed to process delivery for item ${item.id}: ${error.message}`);
+        this.logger.error(`Failed to process delivery for item ${item.id}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
 
@@ -459,7 +459,7 @@ export class MerchantOrderService {
     const nextCursor = hasMore ? items[items.length - 1].id : null;
 
     return {
-      items: items.map((o) => ({
+      items: items.map((o: any) => ({
         id: o.id,
         orderNumber: o.orderNumber,
         status: o.status,

@@ -42,7 +42,7 @@ export class MerchantFavoritesService {
       orderBy: { createdAt: 'desc' },
     });
 
-    return favorites.map((f) => ({
+    return favorites.map((f: any) => ({
       id: f.id,
       type: f.type.toLowerCase() as 'product' | 'player',
       refId: f.productId || f.playerId,

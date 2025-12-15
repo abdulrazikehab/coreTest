@@ -24,7 +24,7 @@ export class MerchantProductController {
   @Get('categories')
   async getCategories(@Request() req: any) {
     const tenantId = req.tenantId;
-    return this.productService.getCategories(tenantId);
+    return this.productService.getCategoriesWithProducts(tenantId);
   }
 
   @Get()
@@ -44,7 +44,7 @@ export class MerchantProductController {
         categoryId,
         brandId,
         search: q,
-        activeOnly: true,
+        isActive: true,
       },
       parseInt(page),
       parseInt(limit),

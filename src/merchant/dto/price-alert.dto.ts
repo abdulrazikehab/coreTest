@@ -2,24 +2,24 @@ import { IsString, IsEnum, IsOptional } from 'class-validator';
 
 export class CreatePriceAlertDto {
   @IsString()
-  productId: string;
+  productId!: string;
 
   @IsEnum(['any_change', 'drop_only', 'rise_only'])
-  alertType: 'any_change' | 'drop_only' | 'rise_only';
+  alertType!: 'any_change' | 'drop_only' | 'rise_only';
 }
 
 export class PriceAlertResponse {
-  id: string;
-  productId: string;
-  productName: string;
+  id!: string;
+  productId!: string;
+  productName!: string;
   productNameAr?: string;
   productImage?: string;
-  currentPrice: number;
-  alertType: string;
-  isActive: boolean;
+  currentPrice!: number;
+  alertType!: string;
+  isActive!: boolean;
   lastNotifiedAt?: Date;
   lastNotifiedPrice?: number;
-  createdAt: Date;
+  createdAt!: Date;
 }
 
 export class PriceAlertListQuery {
@@ -31,4 +31,3 @@ export class PriceAlertListQuery {
   @IsEnum(['any_change', 'drop_only', 'rise_only'])
   alertType?: 'any_change' | 'drop_only' | 'rise_only';
 }
-

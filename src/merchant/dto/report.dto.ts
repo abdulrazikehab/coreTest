@@ -15,48 +15,48 @@ export class ReportDateRangeQuery {
 }
 
 export class DashboardHomeResponse {
-  walletBalance: number;
-  currency: string;
-  todayOrdersCount: number;
-  todayProfit: number;
-  pendingOrdersCount: number;
-  topSellingProducts: TopProductResponse[];
-  recentOrders: RecentOrderResponse[];
-  activePromotions: ActivePromotionResponse[];
-  unreadNotificationsCount: number;
+  walletBalance!: number;
+  currency!: string;
+  todayOrdersCount!: number;
+  todayProfit!: number;
+  pendingOrdersCount!: number;
+  topSellingProducts!: TopProductResponse[];
+  recentOrders!: RecentOrderResponse[];
+  activePromotions!: ActivePromotionResponse[];
+  unreadNotificationsCount!: number;
 }
 
 export class TopProductResponse {
-  productId: string;
-  name: string;
+  productId!: string;
+  name!: string;
   nameAr?: string;
   image?: string;
-  qty: number;
-  revenue: number;
-  profit: number;
+  qty!: number;
+  revenue!: number;
+  profit!: number;
 }
 
 export class RecentOrderResponse {
-  id: string;
-  orderNumber: string;
-  status: string;
-  total: number;
-  createdAt: Date;
+  id!: string;
+  orderNumber!: string;
+  status!: string;
+  total!: number;
+  createdAt!: Date;
 }
 
 export class ActivePromotionResponse {
-  id: string;
-  title: string;
+  id!: string;
+  title!: string;
   titleAr?: string;
-  progressPercentage: number;
-  endsAt: Date;
+  progressPercentage!: number;
+  endsAt!: Date;
 }
 
 export class ProfitReportResponse {
-  profitTotal: number;
-  revenueTotal: number;
-  ordersCount: number;
-  currency: string;
+  profitTotal!: number;
+  revenueTotal!: number;
+  ordersCount!: number;
+  currency!: string;
   breakdown?: {
     date: string;
     profit: number;
@@ -66,7 +66,7 @@ export class ProfitReportResponse {
 }
 
 export class TopProfitableProductsResponse {
-  products: {
+  products!: {
     productId: string;
     name: string;
     nameAr?: string;
@@ -84,7 +84,7 @@ export class PriceChangesReportQuery extends ReportDateRangeQuery {
 }
 
 export class PriceChangesReportResponse {
-  changes: {
+  changes!: {
     productId: string;
     productName: string;
     oldPrice: number;
@@ -94,4 +94,3 @@ export class PriceChangesReportResponse {
     reason?: string;
   }[];
 }
-

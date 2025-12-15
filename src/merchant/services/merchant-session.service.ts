@@ -54,7 +54,7 @@ export class MerchantSessionService {
       orderBy: { lastSeenAt: 'desc' },
     });
 
-    return sessions.map((s) => ({
+    return sessions.map((s: any) => ({
       id: s.id,
       deviceId: s.deviceId,
       deviceName: s.deviceName,

@@ -165,7 +165,7 @@ export class PaymentService {
         throw new NotFoundException('Payment not found');
       }
 
-      let gatewayStatus = null;
+      let gatewayStatus: any = null;
       if (payment.gatewayPaymentId) {
         try {
           gatewayStatus = await this.hyperpayService.checkPaymentStatus(payment.gatewayPaymentId);
