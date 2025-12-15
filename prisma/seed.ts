@@ -196,7 +196,443 @@ async function seedSubscriptionPlans() {
   }
 }
 
+// Seed currencies for a tenant
+async function seedCurrencies(tenantId: string) {
+  console.log('  💱 Seeding currencies...');
+  
+  const currencies = [
+    {
+      tenantId,
+      code: 'SAR',
+      name: 'Saudi Riyal',
+      nameAr: 'ريال سعودي',
+      symbol: 'SAR',
+      symbolAr: 'ر.س',
+      exchangeRate: 1,
+      precision: 2,
+      isActive: true,
+      isDefault: true,
+      sortOrder: 1,
+    },
+    {
+      tenantId,
+      code: 'AED',
+      name: 'UAE Dirham',
+      nameAr: 'درهم اماراتي',
+      symbol: 'AED',
+      symbolAr: 'د.إ',
+      exchangeRate: 0.98, // 1 SAR ≈ 0.98 AED
+      precision: 2,
+      isActive: true,
+      isDefault: false,
+      sortOrder: 2,
+    },
+    {
+      tenantId,
+      code: 'KWD',
+      name: 'Kuwaiti Dinar',
+      nameAr: 'دينار كويتي',
+      symbol: 'KWD',
+      symbolAr: 'د.ك',
+      exchangeRate: 0.082, // 1 SAR ≈ 0.082 KWD
+      precision: 3,
+      isActive: true,
+      isDefault: false,
+      sortOrder: 3,
+    },
+    {
+      tenantId,
+      code: 'USD',
+      name: 'US Dollar',
+      nameAr: 'دولار',
+      symbol: '$',
+      symbolAr: '$',
+      exchangeRate: 0.27, // 1 SAR ≈ 0.27 USD
+      precision: 2,
+      isActive: true,
+      isDefault: false,
+      sortOrder: 4,
+    },
+    {
+      tenantId,
+      code: 'QAR',
+      name: 'Qatari Riyal',
+      nameAr: 'ريال قطري',
+      symbol: 'QAR',
+      symbolAr: 'ر.ق',
+      exchangeRate: 0.97, // 1 SAR ≈ 0.97 QAR
+      precision: 2,
+      isActive: true,
+      isDefault: false,
+      sortOrder: 5,
+    },
+  ];
+
+  for (const currency of currencies) {
+    const existing = await prisma.currency.findUnique({
+      where: {
+        tenantId_code: {
+          tenantId,
+          code: currency.code,
+        },
+      },
+    });
+
+    if (existing) {
+      // Update existing currency
+      await prisma.currency.update({
+        where: { id: existing.id },
+        data: currency,
+      });
+      console.log(`    ⚠️ Currency ${currency.code} already exists – updated`);
+    } else {
+      await prisma.currency.create({ data: currency });
+      console.log(`    ✅ Created currency: ${currency.code} (${currency.nameAr})`);
+    }
+  }
+
+  // Create or update currency settings
+  const existingSettings = await prisma.currencySettings.findUnique({
+    where: { tenantId },
+  });
+
+  if (existingSettings) {
+    await prisma.currencySettings.update({
+      where: { tenantId },
+      data: { baseCurrency: 'SAR' },
+    });
+    console.log('    ⚠️ Currency settings already exist – updated to SAR');
+  } else {
+    await prisma.currencySettings.create({
+      data: {
+        tenantId,
+        baseCurrency: 'SAR',
+        autoUpdateRates: false,
+      },
+    });
+    console.log('    ✅ Created currency settings with SAR as default');
+  }
+}
+
+// Seed digital cards marketplace data (brands, categories, banks)
+async function seedDigitalCardsMarketplace(tenantId: string) {
+  console.log('  🎮 Seeding digital cards marketplace data...');
+
+  // Seed card brands
+  const cardBrands = [
+    {
+      tenantId,
+      name: 'iTunes',
+      nameAr: 'أيتونز',
+      code: 'ITUNES',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/d/df/ITunes_logo.svg',
+      status: 'Active',
+      sortOrder: 1,
+    },
+    {
+      tenantId,
+      name: 'Google Play',
+      nameAr: 'جوجل بلاي',
+      code: 'GOOGLE_PLAY',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg',
+      status: 'Active',
+      sortOrder: 2,
+    },
+    {
+      tenantId,
+      name: 'PlayStation',
+      nameAr: 'بلايستيشن',
+      code: 'PLAYSTATION',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg',
+      status: 'Active',
+      sortOrder: 3,
+    },
+    {
+      tenantId,
+      name: 'Xbox',
+      nameAr: 'إكس بوكس',
+      code: 'XBOX',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg',
+      status: 'Active',
+      sortOrder: 4,
+    },
+    {
+      tenantId,
+      name: 'Steam',
+      nameAr: 'ستيم',
+      code: 'STEAM',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg',
+      status: 'Active',
+      sortOrder: 5,
+    },
+    {
+      tenantId,
+      name: 'PUBG',
+      nameAr: 'ببجي',
+      code: 'PUBG',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/en/9/9f/Pubg_game.png',
+      status: 'Active',
+      sortOrder: 6,
+    },
+    {
+      tenantId,
+      name: 'Free Fire',
+      nameAr: 'فري فاير',
+      code: 'FREEFIRE',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/en/8/87/Free_Fire_cover.png',
+      status: 'Active',
+      sortOrder: 7,
+    },
+    {
+      tenantId,
+      name: 'Netflix',
+      nameAr: 'نتفليكس',
+      code: 'NETFLIX',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg',
+      status: 'Active',
+      sortOrder: 8,
+    },
+    {
+      tenantId,
+      name: 'Spotify',
+      nameAr: 'سبوتيفاي',
+      code: 'SPOTIFY',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg',
+      status: 'Active',
+      sortOrder: 9,
+    },
+    {
+      tenantId,
+      name: 'Razer Gold',
+      nameAr: 'ريزر جولد',
+      code: 'RAZER_GOLD',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/en/4/43/Razer_snake_logo.svg',
+      status: 'Active',
+      sortOrder: 10,
+    },
+    {
+      tenantId,
+      name: 'Amazon',
+      nameAr: 'أمازون',
+      code: 'AMAZON',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+      status: 'Active',
+      sortOrder: 11,
+    },
+    {
+      tenantId,
+      name: 'Nintendo',
+      nameAr: 'نينتندو',
+      code: 'NINTENDO',
+      brandType: 'Digital Cards',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Nintendo.svg',
+      status: 'Active',
+      sortOrder: 12,
+    },
+  ];
+
+  for (const brand of cardBrands) {
+    await prisma.brand.upsert({
+      where: {
+        tenantId_code: {
+          tenantId,
+          code: brand.code || brand.name.toUpperCase(),
+        },
+      },
+      update: brand,
+      create: brand,
+    });
+  }
+  console.log('    ✅ Created/updated card brands');
+
+  // Seed card categories
+  const cardCategories = [
+    {
+      tenantId,
+      name: 'Gaming',
+      nameAr: 'الألعاب',
+      description: 'Gaming cards and game credits',
+      descriptionAr: 'بطاقات الألعاب وأرصدة الألعاب',
+      slug: 'gaming-cards',
+      icon: '🎮',
+      isActive: true,
+      sortOrder: 1,
+    },
+    {
+      tenantId,
+      name: 'Entertainment',
+      nameAr: 'الترفيه',
+      description: 'Streaming and entertainment cards',
+      descriptionAr: 'بطاقات البث والترفيه',
+      slug: 'entertainment-cards',
+      icon: '🎬',
+      isActive: true,
+      sortOrder: 2,
+    },
+    {
+      tenantId,
+      name: 'Shopping',
+      nameAr: 'التسوق',
+      description: 'Gift cards for shopping',
+      descriptionAr: 'بطاقات الهدايا للتسوق',
+      slug: 'shopping-cards',
+      icon: '🛒',
+      isActive: true,
+      sortOrder: 3,
+    },
+    {
+      tenantId,
+      name: 'Mobile Apps',
+      nameAr: 'تطبيقات الجوال',
+      description: 'App store credits and cards',
+      descriptionAr: 'أرصدة وبطاقات متاجر التطبيقات',
+      slug: 'mobile-apps-cards',
+      icon: '📱',
+      isActive: true,
+      sortOrder: 4,
+    },
+    {
+      tenantId,
+      name: 'Telecom',
+      nameAr: 'الاتصالات',
+      description: 'Mobile recharge and telecom cards',
+      descriptionAr: 'بطاقات شحن الجوال والاتصالات',
+      slug: 'telecom-cards',
+      icon: '📞',
+      isActive: true,
+      sortOrder: 5,
+    },
+  ];
+
+  for (const category of cardCategories) {
+    const existing = await prisma.category.findUnique({
+      where: {
+        tenantId_slug: {
+          tenantId,
+          slug: category.slug,
+        },
+      },
+    });
+
+    if (existing) {
+      await prisma.category.update({
+        where: { id: existing.id },
+        data: category,
+      });
+    } else {
+      await prisma.category.create({ data: category });
+    }
+  }
+  console.log('    ✅ Created/updated card categories');
+
+  // Seed banks for wallet top-up
+  const banks = [
+    {
+      tenantId,
+      name: 'Al Rajhi Bank',
+      nameAr: 'مصرف الراجحي',
+      code: 'RJHI',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/7/79/Al_Rajhi_Bank_Logo.svg',
+      accountName: 'Saeaa Digital Cards',
+      accountNumber: '1234567890123456',
+      iban: 'SA0380000000608010167519',
+      swiftCode: 'RJHISARI',
+      isActive: true,
+      sortOrder: 1,
+    },
+    {
+      tenantId,
+      name: 'Al Ahli Bank (SNB)',
+      nameAr: 'البنك الأهلي السعودي',
+      code: 'SABB',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Saudi_National_Bank_Logo.svg',
+      accountName: 'Saeaa Digital Cards',
+      accountNumber: '9876543210123456',
+      iban: 'SA0310000000608010167520',
+      swiftCode: 'SABBSARI',
+      isActive: true,
+      sortOrder: 2,
+    },
+    {
+      tenantId,
+      name: 'Riyad Bank',
+      nameAr: 'بنك الرياض',
+      code: 'RIBL',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Riyad_Bank_Logo.svg',
+      accountName: 'Saeaa Digital Cards',
+      accountNumber: '5555555555123456',
+      iban: 'SA0320000000608010167521',
+      swiftCode: 'RIBLSARI',
+      isActive: true,
+      sortOrder: 3,
+    },
+    {
+      tenantId,
+      name: 'Bank AlBilad',
+      nameAr: 'بنك البلاد',
+      code: 'ALBI',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e3/Bank_Albilad_Logo.svg',
+      accountName: 'Saeaa Digital Cards',
+      accountNumber: '6666666666123456',
+      iban: 'SA0360000000608010167522',
+      swiftCode: 'ALBISAR1',
+      isActive: true,
+      sortOrder: 4,
+    },
+    {
+      tenantId,
+      name: 'STC Pay',
+      nameAr: 'STC Pay',
+      code: 'STCPAY',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/0/01/STC_Pay_logo.svg',
+      accountName: 'Saeaa Digital Cards',
+      accountNumber: '0500000000',
+      iban: '',
+      isActive: true,
+      sortOrder: 5,
+    },
+  ];
+
+  for (const bank of banks) {
+    const existing = await prisma.bank.findUnique({
+      where: {
+        tenantId_code: {
+          tenantId,
+          code: bank.code,
+        },
+      },
+    });
+
+    if (existing) {
+      await prisma.bank.update({
+        where: { id: existing.id },
+        data: bank,
+      });
+    } else {
+      await prisma.bank.create({ data: bank });
+    }
+  }
+  console.log('    ✅ Created/updated banks for wallet top-up');
+}
+
 async function seedTenantData(tenantId: string) {
+  // Seed currencies first
+  await seedCurrencies(tenantId);
+  
+  // Seed digital cards marketplace (brands, categories, banks)
+  await seedDigitalCardsMarketplace(tenantId);
+
   // Create categories
   const categories = [
     {

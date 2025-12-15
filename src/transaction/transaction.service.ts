@@ -115,6 +115,12 @@ export class TransactionService {
         processedAt: t.processedAt,
         settledAt: t.settledAt,
         createdAt: t.createdAt,
+        // Card details (from metadata)
+        cardNumber: (t.metadata as any)?.cardNumber,
+        cardBin: (t.metadata as any)?.cardBin,
+        cardLast4: (t.metadata as any)?.cardLast4,
+        // Print tracking (from metadata)
+        printCount: (t.metadata as any)?.printCount || 0,
       })),
       total,
       limit: filters?.limit || 50,
@@ -247,6 +253,42 @@ export class TransactionService {
         date,
         ...data,
       })),
+    };
+  }
+
+  /**
+   * Reprint transaction receipt and increment print count
+   */
+  async reprintTransaction(tenantId: string, transactionId: string) {
+    const transaction = await this.prisma.transaction.findFirst({
+      where: {
+        id: transactionId,
+        tenantId,
+      },
+    });
+
+    if (!transaction) {
+      throw new Error('Transaction not found');
+    }
+
+    // Increment print count
+    const updated = await this.prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        // Use raw SQL increment since printCount might not be in schema yet
+        metadata: {
+          ...(transaction.metadata as object || {}),
+          printCount: ((transaction.metadata as any)?.printCount || 0) + 1,
+          lastPrintedAt: new Date().toISOString(),
+        },
+      },
+    });
+
+    return {
+      success: true,
+      printCount: ((updated.metadata as any)?.printCount || 1),
+      transactionId: transaction.id,
+      orderNumber: transaction.orderNumber,
     };
   }
 

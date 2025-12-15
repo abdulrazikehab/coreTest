@@ -108,7 +108,7 @@ async function bootstrap() {
     app.useGlobalFilters(new ValidationExceptionFilter());
 
     const port = process.env.CORE_PORT || 3002;
-    await app.listen(port);
+    await app.listen(port,'0.0.0.0');
     logger.log(`✅ app-core listening on port ${port}`);
   } catch (error) {
     logger.error('Failed to start core service:', error);
