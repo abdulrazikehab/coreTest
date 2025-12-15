@@ -7,12 +7,25 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   imports: [
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        redis: {
-          host: configService.get('REDIS_HOST') || 'localhost',
-          port: configService.get('REDIS_PORT') || 6379,
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        return {
+          redis: {
+            host: configService.get('REDIS_HOST') || 'localhost',
+            port: configService.get('REDIS_PORT') || 6379,
+            connectTimeout: process.env.VERCEL ? 1000 : 5000, // Fast timeout for serverless
+            maxRetriesPerRequest: 1,
+            lazyConnect: true, // Don't connect immediately
+            enableReadyCheck: false,
+            retryStrategy: (times: number) => {
+              // Stop retrying after 2 attempts in serverless
+              if (process.env.VERCEL && times > 2) {
+                return null; // Stop retrying
+              }
+              return Math.min(times * 50, 2000);
+            },
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     BullModule.registerQueue({

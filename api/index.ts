@@ -114,8 +114,15 @@ async function createApp() {
       optionsSuccessStatus: 204,
     });
 
-    // Security Hardening
-    app.use(helmet(securityConfig.helmet));
+    // Security Hardening - use minimal config for serverless
+    try {
+      app.use(helmet({
+        contentSecurityPolicy: false, // Disable CSP for serverless
+        crossOriginEmbedderPolicy: false,
+      }));
+    } catch (e) {
+      logger.warn('Helmet configuration failed, continuing without it');
+    }
     
     // Enable global validation
     app.useGlobalPipes(new ValidationPipe({
@@ -124,10 +131,26 @@ async function createApp() {
       forbidNonWhitelisted: true,
     }));
     
-    await app.init();
-    cachedApp = expressApp;
-    logger.log('✅ Core service initialized for Vercel');
-    return expressApp;
+    // Add global filter to log validation errors
+    try {
+      const { ValidationExceptionFilter } = await import('../src/common/filters/validation-exception.filter');
+      app.useGlobalFilters(new ValidationExceptionFilter());
+    } catch (e) {
+      logger.warn('Failed to load ValidationExceptionFilter, continuing without it');
+    }
+    
+    // Initialize the app - this will initialize all modules
+    try {
+      await app.init();
+      cachedApp = expressApp;
+      logger.log('✅ Core service initialized for Vercel');
+      return expressApp;
+    } catch (initError: any) {
+      logger.error('Failed during app.init():', initError?.message);
+      logger.error('Init error stack:', initError?.stack);
+      // Don't cache a failed app
+      throw initError;
+    }
   } catch (error: any) {
     logger.error('Failed to initialize core service:', error);
     logger.error('Error stack:', error?.stack);

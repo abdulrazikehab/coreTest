@@ -65,12 +65,13 @@ import { RedisTestController } from './redis-test.controller';
             console.log('🚀 Redis client ready');
           });
 
-          // Try to connect with timeout
+          // Try to connect with timeout - shorter timeout for serverless
           try {
+            const timeout = process.env.VERCEL ? 1000 : 3000; // 1s for serverless, 3s for regular
             await Promise.race([
               redisClient.connect(),
               new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Connection timeout')), 3000)
+                setTimeout(() => reject(new Error('Connection timeout')), timeout)
               )
             ]);
             
